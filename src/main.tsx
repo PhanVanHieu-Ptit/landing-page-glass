@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ProductPage } from './pages/ProductPage';
+import { LandingPage } from './pages/LandingPage';
 import './styles/global.css';
-createRoot(document.getElementById('root')!).render(<StrictMode><ProductPage/></StrictMode>);
+createRoot(document.getElementById('root')!).render(<StrictMode><LandingPage/></StrictMode>);
