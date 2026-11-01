@@ -4,6 +4,7 @@ import { Environment, Lightformer, OrbitControls } from '@react-three/drei';
 import { BufferGeometry, Color, DoubleSide, Float32BufferAttribute, Vector3, CatmullRomCurve3 } from 'three';
 import type { OrbitControls as Controls } from 'three-stdlib';
 import './ProductExplorer.css';
+import { ExplorerControls } from './ExplorerControls';
 
 const views = [
  { name: 'Front', position: [0, .1, 5.8] },
@@ -85,9 +86,8 @@ export function ProductExplorer({finish}:{finish:number}){
   <div className="explorer-canvas" tabIndex={0} role="group" aria-label="Rotate goggles. Use Left and Right arrow keys to change view." onKeyDown={event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();choose((view+(event.key==='ArrowRight'?1:views.length-1))%views.length);}}}>
    <ViewerBoundary><Suspense fallback={<span className="explorer-loading">Loading product view…</span>}><Canvas frameloop="demand" dpr={[1,1.5]} camera={{position:[0,.1,5.8],fov:40}} onCreated={()=>setReady(true)} gl={{alpha:true,antialias:true}}><Scene revision={revision} view={view} zoom={zoom} finish={finish} onDrag={()=>setCustom(true)}/></Canvas></Suspense></ViewerBoundary>
   </div>
-  <div className="explorer-caption"><span>{custom?'Free view':views[view].name} <span className="explorer-muted">/ {String(view+1).padStart(2,'0')}</span></span><div className="explorer-zoom"><button aria-label="Zoom out" disabled={zoom<=.8||!ready} onClick={()=>setZoom(value=>Math.max(.8,value-.2))}>−</button><span>{Math.round(zoom*100)}%</span><button aria-label="Zoom in" disabled={zoom>=1.8||!ready} onClick={()=>setZoom(value=>Math.min(1.8,value+.2))}>+</button><button aria-label="Reset product view" onClick={()=>choose(0)}>↺</button></div></div>
-  <div className="explorer-views" aria-label="Product viewpoints">{views.map((item,index)=><button key={item.name} aria-pressed={view===index&&!custom} onClick={()=>choose(index)}><span>0{index+1}</span>{item.name}</button>)}</div>
-  <p className="explorer-hint">Drag to rotate · Swipe to explore · + to see closer</p><p className="explorer-note">3D concept visualization. Final product details may vary.</p>
+  <ExplorerControls names={views.map(item=>item.name)} view={view} zoom={zoom} custom={custom} ready={ready} onChoose={choose} onZoom={setZoom}/>
+  <p className="explorer-note">3D concept visualization. Final product details may vary.</p>
  </section>;
 }
 export default ProductExplorer;

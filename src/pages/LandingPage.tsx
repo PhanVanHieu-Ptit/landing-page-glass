@@ -3,11 +3,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import './LandingPage.css';
+import { HelmetPage } from './HelmetPage';
 const ProductExplorer = lazy(() => import('../components/product/ProductExplorer'));
 gsap.registerPlugin(ScrollTrigger);
 const finishes = [{name:'Glacier / Prizm',color:'#d8dfdf',lens:'prizm'},{name:'Carbon / Violet',color:'#292a30',lens:'violet'},{name:'Chalk / Amber',color:'#d6c7ab',lens:'amber'}];
 function Goggles({finish=0}:{finish?:number}) {return <div className={`goggle-art goggle-art--${finishes[finish].lens}`}><img src="/images/aeris-goggles.png" alt={`AERIS X1 concept goggles — ${finishes[finish].name}`} draggable="false" /></div>;}
-export function LandingPage() {
+function GogglesPage() {
  const root=useRef<HTMLElement>(null);
  const reduced=useMediaQuery('(prefers-reduced-motion: reduce)');
  const [chapter,setChapter]=useState(0),[finish,setFinish]=useState(0),[detailsOpen,setDetailsOpen]=useState(false),[storyOpen,setStoryOpen]=useState(false);
@@ -47,4 +48,22 @@ export function LandingPage() {
  <footer className="aeris-footer"><a href="#top" className="aeris-logo">AERIS<span>®</span></a><span>ALPINE OPTICS. A NEW PERSPECTIVE.</span><span>© {new Date().getFullYear()} AERIS</span></footer>
  {storyOpen&&<div className="story-backdrop" onClick={()=>setStoryOpen(false)}><section ref={dialog} className="story-dialog" role="dialog" aria-modal="true" aria-labelledby="story-title" onClick={event=>event.stopPropagation()} onKeyDown={event=>{if(event.key==='Escape')setStoryOpen(false);if(event.key==='Tab'){const items=dialog.current?.querySelectorAll<HTMLElement>('button,a');if(!items?.length)return;const first=items[0],last=items[items.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}}}><button onClick={()=>setStoryOpen(false)} aria-label="Close story">CLOSE ×</button><span className="micro-label">THE AERIS POINT OF VIEW</span><h2 id="story-title">A little higher.<br/>A little clearer.</h2><p>AERIS X1 is an alpine optics concept built around a simple idea: when the distractions fall away, a new perspective opens up. This experience is a study of that moment.</p><a href="#shop" onClick={()=>setStoryOpen(false)}>Discover the X1 ↗</a></section></div>}
  </div>;
+}
+
+
+export function LandingPage() {
+ const [product, setProduct] = useState<'goggles' | 'helmet'>('goggles');
+ function selectProduct(next: 'goggles' | 'helmet') {
+  if (next === product) return;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  setProduct(next);
+ }
+ return <>
+  <div className="product-tabs" role="tablist" aria-label="Chọn sản phẩm">
+   {([{id:'goggles',label:'Mắt kính'}, {id:'helmet',label:'Mũ bảo hiểm'}] as const).map((tab,index) => <button key={tab.id} id={`tab-${tab.id}`} role="tab" aria-selected={product===tab.id} aria-controls={`panel-${tab.id}`} tabIndex={product===tab.id?0:-1} onClick={()=>selectProduct(tab.id)} onKeyDown={event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?'goggles':event.key==='End'?'helmet':index===0?'helmet':'goggles';selectProduct(next);document.getElementById(`tab-${next}`)?.focus();}}}>{tab.label}</button>)}
+  </div>
+  <div key={product} id={`panel-${product}`} role="tabpanel" aria-labelledby={`tab-${product}`} tabIndex={0}>
+   {product==='goggles'?<GogglesPage/>:<HelmetPage/>}
+  </div>
+ </>;
 }
