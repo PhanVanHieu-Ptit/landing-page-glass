@@ -1,0 +1,59 @@
+/* Local stacking context only. The host must keep its persistent product above z=1.
+   Do not put a film with a baked-in product above these environment-only masks. */
+.isolation-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+  --isolation-black: #020304;
+  --isolation-focus-x: 50%;
+  --isolation-focus-y: 48%;
+}
+.isolation-scene > div { position: absolute; pointer-events: none; }
+.isolation-scene__veil {
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(ellipse at var(--isolation-focus-x) var(--isolation-focus-y), transparent 12%, #02030499 49%, var(--isolation-black) 85%);
+}
+/* Feathered edges advance inward; neither edge defines a pretend product contour. */
+.isolation-scene__shutter--left,
+.isolation-scene__shutter--right { top: 0; bottom: 0; width: 70%; }
+.isolation-scene__shutter--left {
+  left: 0;
+  transform: translateX(-102%);
+  background: linear-gradient(90deg, var(--isolation-black) 62%, #020304c9 80%, transparent);
+}
+.isolation-scene__shutter--right {
+  right: 0;
+  transform: translateX(102%);
+  background: linear-gradient(270deg, var(--isolation-black) 62%, #020304c9 80%, transparent);
+}
+.isolation-scene__matte { inset: 0; opacity: 0; background: var(--isolation-black); }
+/* Behind the product: a restrained light field, never a replacement silhouette. */
+.isolation-scene__light {
+  inset: 10% 4%;
+  opacity: 0;
+  transform: scale(1.12);
+  background: radial-gradient(ellipse at var(--isolation-focus-x) var(--isolation-focus-y), #b3cdd0 0%, #4f696c 24%, transparent 62%);
+}
+/* No approved foreground asset: preserve the original environment and its labels. */
+.isolation-scene[data-product-ready='false'] { visibility: hidden; }
+/* Reduced motion keeps the continuous opacity envelope, suppressing spatial travel.
+   The matte still reaches black at .45, with no endpoint jump at .30. */
+@media (prefers-reduced-motion: reduce) {
+  .isolation-scene__shutter, .isolation-scene__light { visibility: hidden; }
+}
+.isolation-scene__shutter--top,
+.isolation-scene__shutter--bottom { left: 0; right: 0; height: 66%; }
+.isolation-scene__shutter--top {
+  top: 0;
+  transform: translateY(-102%);
+  background: linear-gradient(180deg, var(--isolation-black) 55%, #020304a8 76%, transparent);
+}
+.isolation-scene__shutter--bottom {
+  bottom: 0;
+  transform: translateY(102%);
+  background: linear-gradient(0deg, var(--isolation-black) 55%, #020304a8 76%, transparent);
+}

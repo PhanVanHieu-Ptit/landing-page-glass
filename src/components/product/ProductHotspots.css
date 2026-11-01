@@ -1,0 +1,108 @@
+.product-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  color: #eef2e9;
+  font-family: system-ui, sans-serif;
+  pointer-events: none;
+}
+.product-hotspots[hidden], .product-hotspots [hidden] { display: none; }
+.product-hotspots *, .product-hotspots *::before, .product-hotspots *::after { box-sizing: border-box; }
+.product-hotspots__markers { position: absolute; inset: 0; }
+.product-hotspots__marker {
+  position: absolute;
+  left: var(--hotspot-x);
+  top: var(--hotspot-y);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+.product-hotspots__dot {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #d9ecb5a8;
+  border-radius: 50%;
+  background: #132019ed;
+  box-shadow: 0 0 0 4px #0a140c40;
+  font-size: 10px;
+  line-height: 1;
+  transition: background 180ms ease, color 180ms ease;
+}
+.product-hotspots__marker:hover .product-hotspots__dot,
+.product-hotspots__marker[aria-expanded="true"] .product-hotspots__dot { color: #132019; background: #ddf49b; }
+.product-hotspots__label {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  max-width: 145px;
+  width: max-content;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: #101b16f5;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.product-hotspots__marker:hover .product-hotspots__label,
+.product-hotspots__marker:focus-visible .product-hotspots__label { opacity: 1; }
+.product-hotspots__details { position: absolute; inset: auto 20px 20px; }
+.product-hotspots__panel {
+  width: min(100%, 360px);
+  max-height: 100%;
+  padding: 16px;
+  border: 1px solid #d9ecb540;
+  border-radius: 14px;
+  background: #101b16f5;
+  box-shadow: 0 8px 28px #0003;
+  pointer-events: auto;
+  animation: product-hotspots-reveal 200ms ease-out both;
+}
+.product-hotspots__heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.product-hotspots__heading h3 { margin: 0; font-size: 15px; line-height: 1.4; font-weight: 600; }
+.product-hotspots__close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  margin: -8px -8px -4px 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #eef2e9;
+  font: 24px/1 system-ui, sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.product-hotspots__close:hover { background: #ffffff12; }
+.product-hotspots__panel p { margin: 10px 0; color: #d0dad3; font-size: 13px; line-height: 1.6; }
+.product-hotspots__panel small { display: block; color: #c0cea9; font-size: 11px; line-height: 1.5; }
+.product-hotspots button:focus-visible { outline: 2px solid #ddf49b; outline-offset: 3px; }
+@keyframes product-hotspots-reveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) {
+  /* Reserve a separate reading area so the panel never covers touch targets.
+     On small screens the overlay contributes height below the product stage. */
+  .product-hotspots { position: relative; min-height: 520px; display: grid; grid-template-rows: 290px auto; }
+  .product-hotspots[hidden] { display: none; }
+  .product-hotspots__markers { position: relative; grid-row: 1; }
+  .product-hotspots__details { position: relative; inset: auto; grid-row: 2; align-self: end; padding: 12px; }
+  .product-hotspots__panel { width: 100%; padding: 14px; }
+  .product-hotspots__label { max-width: 100px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-hotspots__panel { animation: none; }
+  .product-hotspots__dot, .product-hotspots__label { transition: none; }
+}
